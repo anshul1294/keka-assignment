@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         return view
     }()
     
-    var viewModel = DocViewModel(dbRepo: DBRepository(context:  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext), networkChecker: NetworkInternetConnectionChecker(), dataRepository: DataRepositoryImplementation())
+    var viewModel = DocViewModel(dataRepository: DataRepositoryImplementation(dbRepo: DBRepository(context: (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext), networkChecker: NetworkInternetConnectionChecker()))
 
     override func viewDidLoad() {
         super.viewDidLoad()

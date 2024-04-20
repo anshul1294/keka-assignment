@@ -10,8 +10,13 @@
 import Foundation
 import CoreData
 
-class DBRepository {
-    let context: NSManagedObjectContext
+protocol DBRepo {
+    func fetchDocsFromDB() throws -> [Document]
+    func saveDocsToDB(docs: [Doc]) throws
+}
+
+class DBRepository: DBRepo {
+    private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
         self.context = context

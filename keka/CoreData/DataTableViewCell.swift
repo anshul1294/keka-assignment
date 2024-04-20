@@ -88,10 +88,10 @@ class DataTableViewCell: UITableViewCell {
         }
         
         NSLayoutConstraint.activate([
-            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            containerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
             containerView.topAnchor.constraint(equalTo: topAnchor),
-            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
             
             titleImage.topAnchor.constraint(equalTo: containerView.topAnchor),
             titleImage.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),

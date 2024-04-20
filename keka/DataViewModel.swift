@@ -19,58 +19,21 @@ class DocViewModel {
     }
     
     weak var delegate: DocsViewModelDelegate?
-    
     weak var errorDelegate: DocsViewModelErrorDelegate?
-    
-    //let context: NSManagedObjectContext
-    
-    let networkChecker: NetworkInternetConnectionChecker
     let dataRepository: DataRepository
-    let dbRepo: DBRepository
     
-    init(dbRepo: DBRepository, networkChecker: NetworkInternetConnectionChecker, dataRepository: DataRepository) {
-        self.dbRepo = dbRepo
-        self.networkChecker = networkChecker
+    init(dataRepository: DataRepository) {
         self.dataRepository = dataRepository
     }
 
     func fetchDocs() {
-        if networkChecker.isNetworkReachable() {
-            dataRepository.fetchDocs { result in
-                switch result {
-                case .success(let documents):
-                    self.docs = documents.sorted(by: self.sortByPublicationDate)
-                    self.saveOfflineData()
-                case .failure(let failure):
-                    self.errorDelegate?.showError(error: failure.localizedDescription)
-                }
+        dataRepository.fetchDocs { result in
+            switch result {
+            case .success(let docs):
+                self.docs = docs.sorted(by: self.sortByPublicationDate)
+            case .failure(let failure):
+                self.errorDelegate?.showError(error: failure.localizedDescription)
             }
-        } else {
-            self.fetchOfflineDocs()
-        }
-        
-    }
-    
-    func fetchOfflineDocs() {
-        do {
-            let documents = try dbRepo.fetchDocsFromDB()
-            let docs = documents.map { doc in
-                return Doc(abstract: doc.documentDescription,
-                           multimedia: [MultiMedia(imageUrl: doc.imageUrl)],
-                           headline: Headline(main: doc.title),
-                           actualPublicationDate: doc.publicationDate)
-            }.sorted(by: self.sortByPublicationDate)
-            self.docs.append(contentsOf: docs)
-        } catch {
-            errorDelegate?.showError(error: error.localizedDescription)
-        }
-    }
-    
-    func saveOfflineData() {
-        do {
-            try dbRepo.saveDocsToDB(docs: docs)
-        } catch {
-            errorDelegate?.showError(error: error.localizedDescription)
         }
     }
     
