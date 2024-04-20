@@ -24,12 +24,12 @@ class DataRepositoryImplementation: DataRepository {
     
     func fetchDocs(completion: @escaping (Result<[Doc], Error>) -> Void) {
         if networkChecker.isNetworkReachable() {
-            remoteFetchDocs { result in
+            remoteFetchDocs { [weak self] result in
                 switch result {
                 case .success(let documents):
                     completion(.success(documents))
                     do {
-                        try self.dbRepo.saveDocsToDB(docs: documents)
+                        try self?.dbRepo.saveDocsToDB(docs: documents)
                     } catch {
                         completion(.failure(error))
                     }

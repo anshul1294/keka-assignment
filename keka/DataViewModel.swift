@@ -27,17 +27,18 @@ class DocViewModel {
     }
 
     func fetchDocs() {
-        dataRepository.fetchDocs { result in
+        dataRepository.fetchDocs { [weak self] result in
+            guard let strongSelf = self else {return}
             switch result {
             case .success(let docs):
-                self.docs = docs.sorted(by: self.sortByPublicationDate)
+                strongSelf.docs = docs.sorted(by: strongSelf.sortByPublicationDate)
             case .failure(let failure):
-                self.errorDelegate?.showError(error: failure.localizedDescription)
+                strongSelf.errorDelegate?.showError(error: failure.localizedDescription)
             }
         }
     }
     
-    func sortByPublicationDate(_ doc1: Doc, _ doc2: Doc) -> Bool {
+    private func sortByPublicationDate(_ doc1: Doc, _ doc2: Doc) -> Bool {
         guard let date1 = doc1.publicationDate, let date2 = doc2.publicationDate else {
             return false
         }
